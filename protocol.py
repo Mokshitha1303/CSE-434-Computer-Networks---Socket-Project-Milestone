@@ -51,6 +51,9 @@ def make_socket(port=0, ip="", rcvbuf=None):
         s.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, rcvbuf)
     if port or ip:
         s.bind((ip, port))
+    if hasattr(socket, "SIO_UDP_CONNRESET"):
+        # Windows reports ICMP "port unreachable" as a recvfrom error; turn that off.
+        s.ioctl(socket.SIO_UDP_CONNRESET, False)
     return s
 
 
